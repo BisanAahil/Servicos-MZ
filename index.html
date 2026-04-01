@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MZ Serviços - Conectando Moçambique</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS GERAIS (CSS) --- */
+        :root {
+            --primary: #0056b3;
+            --secondary: #ff9900;
+            --bg-color: #f0f4f8;
+            --text-dark: #1a1a1a;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --whatsapp: #25D366;
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #d1d9e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            max-height: 850px;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 415px) {
+            #app-container {
+                border-radius: 35px;
+                border: 10px solid #222;
+                height: 90vh;
+            }
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 6px rgba(0, 86, 179, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--white);
+            box-shadow: 0 4px 6px rgba(255, 153, 0, 0.2);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp);
+            color: var(--white);
+            font-size: 17px;
+        }
+
+        .btn-call {
+            background-color: #555;
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #c8d1d9;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: var(--white);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            border-width: 2px;
+        }
+
+        input[type="file"] {
+            font-size: 14px;
+            padding: 10px 0;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .back-btn {
+            font-size: 22px;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* ESTILOS ESPECÍFICOS */
+        #screen-onboarding {
+            background: linear-gradient(135deg, var(--primary) 0%, #007bff 100%);
+            color: var(--white);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+        }
+
+        #screen-onboarding h1 {
+            color: var(--white);
+            font-size: 36px;
+            margin-top: 25px;
+            font-weight: 800;
+        }
+
+        #screen-onboarding p {
+            color: #e0f0ff;
+            font-size: 17px;
+            margin-bottom: 50px;
+        }
+
+        .icon-logo {
+            font-size: 90px;
+            color: var(--secondary);
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .grid-services {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .service-card {
+            background: var(--white);
+            padding: 25px 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-card:active {
+            transform: translateY(2px);
+            border-color: var(--primary);
+            background-color: #f0f7ff;
+        }
+
+        .service-card i {
+            font-size: 34px;
+            color: var(--primary);
+        }
+
+        .service-card span {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .search-bar {
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            padding: 10px 0;
+            margin-bottom: 15px;
+            z-index: 10;
+        }
+
+        .provider-card {
+            background: var(--white);
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #eee;
+        }
+
+        .provider-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #eee;
+        }
+
+        .provider-info {
+            flex: 1;
+        }
+
+        .provider-info h4 {
+            margin-bottom: 4px;
+            font-size: 17px;
+        }
+
+        .provider-info p {
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #f5b301;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge {
+            background-color: #e0f0ff;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .profile-main {
+            text-align: center;
+            margin-bottom: 25px;
+            background: var(--white);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-avatar-big {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            margin-bottom: 15px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-main h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .provincia-tag {
+            background-color: #e0f0ff;
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            background: var(--white);
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #eee;
+        }
+
+        .stat-item strong {
+            display: block;
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .stat-item span {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .about-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .about-section h4 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        /* TOGGLE SWITCH */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 54px;
+            height: 28px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px; width: 20px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* SISTEMA DE AVALIAÇÃO */
+        .rating-interactive {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .rating-interactive i {
+            font-size: 30px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rating-interactive i.active { color: #f5b301; }
+
+        /* TOAST */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 16px;
+            position: absolute;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadeinToast 0.5s, fadeoutToast 0.5s 2.5s;
+        }
+
+        @keyframes fadeinToast {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeoutToast {
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const SUPABASE_URL = "https://vfyegozdwpnoidafimqt.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmeWVnb3pkd3Bub2lkYWZpbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5OTc3MTgsImV4cCI6MjA5MDU3MzcxOH0.wWD2KUMUEGC_UBl1mH8-E1iLWovAkrqEf8mreRtt5iQ";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <div id="app-container">
+        <div id="toast">Mensagem aqui</div>
+
+        <div id="screen-login" class="screen active">
+            <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 40px;">
+                <i class="fas fa-tools icon-logo" style="font-size: 80px; color: var(--primary); margin-bottom: 20px; animation: none;"></i>
+                <h1 style="color: var(--primary); text-align: center;">MZ Serviços</h1>
+                <p style="text-align: center; margin-bottom: 30px;">Faça login ou crie sua conta para começar.</p>
+
+                <div style="width: 100%; max-width: 320px;">
+                    <div class="form-group">
+                        <label for="auth-email">E-mail</label>
+                        <input type="email" id="auth-email" placeholder="Seu e-mail">
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Senha</label>
+                        <input type="password" id="auth-password" placeholder="Sua senha">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="login()" style="margin-bottom: 15px;">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                    <button class="btn btn-outline" onclick="registrar()">
+                        <i class="fas fa-user-plus"></i> Criar Conta
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-onboarding" class="screen">
+            <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 20px;">
+                <i class="fas fa-tools icon-logo"></i>
+                <h1>MZ Serviços</h1>
+                <p>Encontre profissionais locais confiáveis em segundos. Simples, rápido e moçambicano.</p>
+                <div style="width: 100%; margin-top: auto; display: flex; flex-direction: column; gap: 15px;">
+                    <button class="btn btn-secondary" onclick="navTo('screen-user-register')">
+                        <i class="fas fa-search"></i> Procurar Serviços
+                    </button>
+                    <button class="btn btn-outline" style="color: white; border-color: white;" onclick="openProviderTypeSelection()">
+                        <i class="fas fa-user-tie"></i> Sou Prestador de Serviços
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-user-register" class="screen">
+            <div class="main-content">
+                <div class="header">
+                    <i class="fas fa-arrow-left back-btn" onclick="navTo('screen-onboarding')"></i>
+                    <h2>Quase lá...</h2>
+                </div>
+                <p>Diga-nos o seu nome e onde está para encontrarmos os melhores profissionais perto de si.</p>
+
+                <div class="form-group">
+                    <label for="userName">Seu Nome ou Apelido</label>
+                    <input type="text" id="userName" placeholder="Ex: Isac ou Maria">
+                </div>
+                <div class="form-group">
+                    <label for="userProvince">Sua Província</label>
+                    <select id="userProvince">
+                        <option value="" disabled selected>Selecione a província</option>
+                        <option value="Maputo Cidade">Maputo Cidade</option>
+                        <option value="Maputo Província">Maputo Província</option>
+                        <option value="Gaza">Gaza</option>
+                        <option value="Inhambane">Inhambane</option>
+                        <option value="Sofala">Sofala</option>
+                        <option value="Manica">Manica</option>
+                        <option value="Tete">Tete</option>
+                        <option value="Zambézia">Zambézia</option>
+                        <option value="Nampula">Nampula</option>
+                        <option value="Cabo Delgado">Cabo Delgado</option>
+                        <option value="Niassa">Niassa</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 30px;" onclick="finalizeUserRegister()">
+                    Entrar no App <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="screen-provider-type" class="screen">
+            <div class="main-content" style="display: flex; flex-direction: column; align-items: center; padding-top: 40px;">
+                <div class="header" style="width: 100%; border: none;">
+                    <i class="fas fa-arrow-left back-btn" onclick="navTo('screen-onboarding')"></i>
+                    <h2 style="margin-bottom: 0;">Tipo de Conta</h2>
+                </div>
+                <p style="text-align: left; width: 100%;">Como gostaria de se registar na nossa plataforma?</p>
+
+                <div style="display: flex; flex-direction: column; gap: 20px; width: 100%; margin-top: 20px;">
+                    <button class="btn btn-primary" style="padding: 25px 15px; flex-direction: column; gap: 15px; background-color: #fff; border: 2px solid var(--primary); color: var(--text-dark);" onclick="selectProviderType('instantaneo')">
+                        <i class="fas fa-tools" style="font-size: 35px; color: var(--primary);"></i>
+                        <div>
+                            <h3 style="margin-bottom: 5px; color: var(--primary);">Serviços Instantâneos</h3>
+                            <p style="margin: 0; font-size: 13px; color: var(--text-light); font-weight: normal;">Eletricistas, Canalizadores, Pedreiros, Mecânicos e outros serviços práticos.</p>
+                        </div>
+                    </button>
+
+                    <button class="btn btn-secondary" style="padding: 25px 15px; flex-direction: column; gap: 15px; background-color: #fff; border: 2px solid var(--secondary); color: var(--text-dark);" onclick="selectProviderType('especializado')">
+                        <i class="fas fa-user-tie" style="font-size: 35px; color: var(--secondary);"></i>
+                        <div>
+                            <h3 style="margin-bottom: 5px; color: var(--secondary);">Profissionais Especializados</h3>
+                            <p style="margin: 0; font-size: 13px; color: var(--text-light); font-weight: normal;">Engenheiros, Médicos, Professores, Advogados, Gestores e mais.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-home" class="screen">
+            <div class="main-content">
+                <div class="header" style="border: none; justify-content: space-between; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-map-marker-alt" style="color: var(--secondary); font-size: 18px;"></i>
+                        <span id="user-location-display" style="font-weight: bold; color: var(--primary);">Localização</span>
+                    </div>
+                    <i class="fas fa-user-circle" style="font-size: 30px; color: #ccc; cursor: pointer;" onclick="navTo('screen-user-register')"></i>
+                </div>
+
+                <div class="user-welcome">
+                    <div>
+                        <h3 style="margin-bottom: 0;">Olá, <span id="user-name-display">Usuário</span>!</h3>
+                        <p style="margin-bottom: 0; font-size: 14px;">O que você precisa hoje?</p>
+                    </div>
+                    <i class="fas fa-hand-sparkles" style="font-size: 30px; color: var(--secondary);"></i>
+                </div>
+
+                <div id="my-profile-banner" style="display: none; margin-bottom: 20px;">
+                    <button class="btn btn-outline" style="background: var(--white);" onclick="openManageProfile()">
+                        <i class="fas fa-user-cog"></i> Gerir Meu Perfil Profissional
+                    </button>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-bolt"></i> Serviços Instantâneos</h3>
+                <div class="grid-services" id="services-instantaneos-container"></div>
+
+                <h3 class="section-title"><i class="fas fa-briefcase"></i> Profissionais Especializados</h3>
+                <div class="grid-services" id="services-especializados-container"></div>
+            </div>
+        </div>
+
+        <div id="screen-provider-list" class="screen">
+            <div class="main-content">
+                <div class="header">
+                    <i class="fas fa-arrow-left back-btn" onclick="navTo('screen-home')"></i>
+                    <div>
+                        <h2 id="list-title" style="margin-bottom: 0;">Profissionais</h2>
+                        <p style="margin-bottom: 0; font-size: 12px;">Em <span id="location-target" style="font-weight:bold;">Sua Área</span></p>
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="providerSearch" placeholder="🔍 Pesquisar por nome ou especialidade..." onkeyup="filterProvidersBySearch()">
+                </div>
+
+                <div id="providers-container"></div>
+            </div>
+        </div>
+
+        <div id="screen-provider-profile" class="screen">
+            <div class="main-content">
+                <div class="header">
+                    <i class="fas fa-arrow-left back-btn" onclick="navTo('screen-provider-list')"></i>
+                    <h2>Perfil Profissional</h2>
+                </div>
+
+                <div class="profile-main">
+                    <img src="" id="prof-img" class="profile-avatar-big" alt="Foto do Profissional">
+                    <h3 id="prof-name">Nome do Profissional</h3>
+                    <p id="prof-service" style="color: var(--primary); font-weight: bold; margin-bottom: 5px;">Serviço</p>
+                    <div id="prof-cert-badge" style="display: none; margin-bottom: 10px; font-size: 12px; color: var(--success);">
+                        <i class="fas fa-check-circle"></i> Certificado de Licenciatura Submetido
+                    </div>
+                    <div class="provincia-tag">
+                        <i class="fas fa-map-marker-alt"></i> <span id="prof-prov">Província</span>
+                    </div>
+                    <div class="stars" style="justify-content: center; font-size: 16px;">
+                        <i class="fas fa-star"></i> <span id="prof-rating">0.0</span> <span style="color: #bbb; font-weight: normal; font-size: 13px;">(Média)</span>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <strong id="prof-exp">5+</strong><span>Anos Exp.</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong id="prof-age">--</strong><span>Idade</span>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h4><i class="fas fa-info-circle" style="color: var(--primary);"></i> Sobre Mim / Descrição</h4>
+                    <p id="prof-desc" style="margin-bottom: 0;">Descrição curta.</p>
+                </div>
+
+                <div class="about-section" style="text-align: center;" id="rating-widget-container">
+                    <h4><i class="fas fa-star-half-alt" style="color: var(--primary);"></i> Avaliar Profissional</h4>
+                    <p style="font-size: 13px;">Como foi o serviço?</p>
+                    <div class="rating-interactive" id="user-rating-stars">
+                        <i class="fas fa-star" data-val="1" onclick="submitRating(1)"></i>
+                        <i class="fas fa-star" data-val="2" onclick="submitRating(2)"></i>
+                        <i class="fas fa-star" data-val="3" onclick="submitRating(3)"></i>
+                        <i class="fas fa-star" data-val="4" onclick="submitRating(4)"></i>
+                        <i class="fas fa-star" data-val="5" onclick="submitRating(5)"></i>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn btn-whatsapp" id="btn-wa">
+                        <i class="fab fa-whatsapp"></i> Contactar via WhatsApp
+                    </button>
+                    <button class="btn btn-call" id="btn-call">
+                        <i class="fas fa-phone-alt"></i> Fazer Ligação Normal
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-manage-profile" class="screen">
+            <div class="main-content">
+                <div class="header">
+                    <i class="fas fa-arrow-left back-btn" onclick="navTo('screen-home')"></i>
+                    <h2>Meu Perfil</h2>
+                </div>
+
+                <div class="profile-main">
+                    <img src="" id="my-prof-img" class="profile-avatar-big" alt="Minha Foto">
+                    <h3 id="my-prof-name">Nome</h3>
+                    <p id="my-prof-service" style="color: var(--primary); font-weight: bold;">Serviço</p>
+
+                    <div style="background: var(--bg-color); padding: 15px; border-radius: 12px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="text-align: left;">
+                            <h4 style="margin-bottom: 2px;">Status do Perfil</h4>
+                            <span id="profile-status-text" style="font-size: 13px; color: var(--success); font-weight: bold;">Ativo (Público)</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="profile-toggle" onchange="toggleProfileStatus()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p style="font-size: 12px; margin-top: 10px; color: #888; text-align: left;">Desative se não estiver disponível para receber trabalhos.</p>
+                </div>
+
+                <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="openEditMode()">
+                    <i class="fas fa-edit"></i> Editar Meus Dados
+                </button>
+            </div>
+        </div>
+
+        <div id="screen-provider-register" class="screen">
+            <div class="main-content">
+                <div class="header">
+                    <i class="fas fa-arrow-left back-btn" id="reg-back-btn" onclick="navTo('screen-provider-type')"></i>
+                    <h2 id="reg-title">Aderir como Profissional</h2>
+                </div>
+                <p id="reg-subtitle">Preencha os dados abaixo. O seu perfil ficará visível imediatamente para clientes na sua província.</p>
+
+                <div style="background: var(--white); padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div class="form-group" style="text-align: center;">
+                        <label>Sua Foto de Perfil *</label>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                            <img id="reg-photo-preview" src="https://via.placeholder.com/100?text=Foto" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;">
+                            <input type="file" id="reg-photo" accept="image/*" onchange="previewPhoto(event, 'reg-photo-preview', true)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Seu Nome Completo *</label>
+                        <input type="text" id="reg-name" placeholder="Ex: Carlos Sitoe">
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Telefone (Com WhatsApp) *</label>
+                        <input type="tel" id="reg-tel" placeholder="Ex: 841234567 (9 dígitos)">
+                    </div>
+
+                    <div class="form-group">
+                        <label id="lbl-service">Qual é o seu Serviço? *</label>
+                        <select id="reg-service" onchange="handleServiceChange()">
+                            <option value="" disabled selected>Selecione</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="reg-subcategory-group" style="display: none;">
+                        <label id="lbl-subcategory">Especialidade / Ramo *</label>
+                        <select id="reg-subcategory">
+                            <option value="" disabled selected>Selecione a especialidade</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="reg-cert-group" style="display: none; background-color: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
+                        <label><i class="fas fa-file-contract" style="color: var(--primary);"></i> Certificado de Licenciatura *</label>
+                        <p style="font-size: 12px; margin-bottom: 10px;">Anexe uma foto do seu certificado para validação.</p>
+                        <input type="file" id="reg-cert" accept="image/*" onchange="previewPhoto(event, 'reg-cert-preview', false)">
+                        <img id="reg-cert-preview" style="width: 100%; max-height: 150px; object-fit: contain; margin-top: 10px; display: none;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Em qual Província você atua? *</label>
+                        <select id="reg-province">
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Maputo Cidade">Maputo Cidade</option>
+                            <option value="Maputo Província">Maputo Província</option>
+                            <option value="Gaza">Gaza</option>
+                            <option value="Inhambane">Inhambane</option>
+                            <option value="Sofala">Sofala</option>
+                            <option value="Manica">Manica</option>
+                            <option value="Tete">Tete</option>
+                            <option value="Zambézia">Zambézia</option>
+                            <option value="Nampula">Nampula</option>
+                            <option value="Cabo Delgado">Cabo Delgado</option>
+                            <option value="Niassa">Niassa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Anos de Experiência *</label>
+                        <select id="reg-exp">
+                            <option value="1-2">1 a 2 anos</option>
+                            <option value="3-5">3 a 5 anos</option>
+                            <option value="5+">Mais de 5 anos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sua Idade (Opcional)</label>
+                        <input type="number" id="reg-age" placeholder="Ex: 30">
+                    </div>
+                    <div class="form-group">
+                        <label>Pequena Apresentação (Sua Descrição) *</label>
+                        <textarea id="reg-desc" rows="3" placeholder="Ex: Faço o meu trabalho com excelência e garantia."></textarea>
+                    </div>
+
+                    <p style="font-size: 12px; color: #888;">* Campos obrigatórios.</p>
+
+                    <button class="btn btn-secondary" style="margin-top: 15px;" id="reg-submit-btn" onclick="saveProviderProfile()">
+                        <i class="fas fa-check-circle"></i> Submeter Meu Cadastro
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* --- LÓGICA DE AUTENTICAÇÃO SUPABASE --- */
+        async function registrar() {
+            const email = document.getElementById("auth-email").value;
+            const password = document.getElementById("auth-password").value;
+
+            if(!email || !password) {
+                showToast("⚠️ Preencha email e senha para continuar.");
+                return;
+            }
+
+            showToast("A criar conta, por favor aguarde...");
+
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                showToast("Erro: " + error.message);
+            } else {
+                showToast("✅ Conta criada com sucesso!");
+                navTo('screen-onboarding'); // Transita para o app!
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById("auth-email").value;
+            const password = document.getElementById("auth-password").value;
+
+            if(!email || !password) {
+                showToast("⚠️ Preencha email e senha para entrar.");
+                return;
+            }
+
+            showToast("A iniciar sessão...");
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                showToast("Erro: " + error.message);
+            } else {
+                showToast("✅ Login efetuado com sucesso!");
+                navTo('screen-onboarding'); // Transita para o app!
+            }
+        }
+
+        /* --- LÓGICA DO APLICATIVO (JAVASCRIPT) --- */
+        const listaServicosInstantaneos = [
+            { id: 'canal', nome: 'Canalizador', icon: 'fa-faucet' },
+            { id: 'eletri', nome: 'Eletricista', icon: 'fa-bolt' },
+            { id: 'carpin', nome: 'Carpinteiro', icon: 'fa-hammer' },
+            { id: 'pintor', nome: 'Pintor', icon: 'fa-paint-roller' },
+            { id: 'mecan', nome: 'Mecânico', icon: 'fa-wrench' },
+            { id: 'domest', nome: 'Doméstica', icon: 'fa-broom' },
+            { id: 'pedrei', nome: 'Pedreiro', icon: 'fa-trowel-bricks' },
+            { id: 'arcon', nome: 'Técnico AC', icon: 'fa-snowflake' },
+            { id: 'serra', nome: 'Serralheiro', icon: 'fa-door-open' },
+            { id: 'lavad', nome: 'Lavador Carros', icon: 'fa-car-wash' },
+            { id: 'segur', nome: 'Segurança', icon: 'fa-shield-halved' }
+        ];
+
+        const listaEspecializados = {
+            'Engenheiro': { icon: 'fa-hard-hat', subs: ['Engenheiro Informático', 'Civil', 'Do Ambiente', 'Agronómica', 'Eléctrica', 'Electrónica', 'Florestal', 'Gestão Industrial', 'Mecânica', 'Química', 'Rural'] },
+            'Médico': { icon: 'fa-user-md', subs: ['Médico Geral', 'Dentista', 'Enfermeiro(a)', 'Farmacêutico', 'Técnico de Laboratório', 'Técnico de Medicina Geral', 'Enfermagem Materno-Infantil', 'Nutricionista', 'Psicólogo', 'Pediatra'] },
+            'Professor': { icon: 'fa-chalkboard-teacher', subs: ['Português', 'Matemática', 'Biologia', 'Física', 'Química', 'Tic\'s', 'Empreendedorismo', 'Filosofia', 'Geografia', 'História', 'Educação Visual', 'Desenho', 'Agro-Pecuária', 'Ciências Naturais', 'Ciências Sociais', 'Inglês', 'Francês', 'Árabe', 'Educação Física', 'Artes'] },
+            'Arquitecto': { icon: 'fa-drafting-compass', subs: [] },
+            'Motorista': { icon: 'fa-car', subs: [] },
+            'Economista': { icon: 'fa-chart-line', subs: [] },
+            'Administrador Público': { icon: 'fa-landmark', subs: [] },
+            'Gestor de Empresas': { icon: 'fa-briefcase', subs: [] },
+            'Contabilista': { icon: 'fa-calculator', subs: [] },
+            'Analista Financeiro': { icon: 'fa-chart-pie', subs: [] },
+            'Bancário': { icon: 'fa-piggy-bank', subs: [] },
+            'Administrador': { icon: 'fa-clipboard-list', subs: [] },
+            'Gestor Logístico': { icon: 'fa-boxes', subs: [] },
+            'Recursos Humanos': { icon: 'fa-users', subs: [] },
+            'Advogado': { icon: 'fa-balance-scale', subs: [] }
+        };
+
+        let prestadoresDB = [];
+        let currentUser = { nome: "", provincia: "", providerId: null };
+        let currentServiceSelected = "";
+        let currentProviderListing = [];
+        let currentPhotoBase64 = "";
+        let currentCertBase64 = ""; 
+        let isEditMode = false;
+        let currentRegistrationType = ""; 
+        let currentlyViewedProviderId = null;
+
+        function navTo(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                targetScreen.querySelector('.main-content').scrollTop = 0;
+            }
+        }
+
+        function finalizeUserRegister() {
+            const nameInp = document.getElementById('userName').value.trim();
+            const provInp = document.getElementById('userProvince').value;
+
+            if (!nameInp || !provInp) {
+                showToast("⚠️ Preencha seu nome e província.");
+                return;
+            }
+
+            currentUser.nome = nameInp;
+            currentUser.provincia = provInp;
+
+            document.getElementById('user-name-display').innerText = currentUser.nome;
+            document.getElementById('user-location-display').innerText = currentUser.provincia;
+            document.getElementById('location-target').innerText = currentUser.provincia;
+
+            renderServicesHome();
+            showToast(`Bem-vindo, ${currentUser.nome}! 👋`);
+            navTo('screen-home');
+        }
+
+        function renderServicesHome() {
+            const containerInstantaneo = document.getElementById('services-instantaneos-container');
+            const containerEspec = document.getElementById('services-especializados-container');
+
+            containerInstantaneo.innerHTML = '';
+            containerEspec.innerHTML = '';
+
+            listaServicosInstantaneos.forEach(serv => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.onclick = () => selectServiceAndLoadProviders(serv.nome, 'instantaneo');
+                card.innerHTML = `<i class="fas ${serv.icon}"></i><span>${serv.nome}</span>`;
+                containerInstantaneo.appendChild(card);
+            });
+
+            Object.keys(listaEspecializados).forEach(key => {
+                const serv = listaEspecializados[key];
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.style.borderColor = '#eee';
+                card.onclick = () => selectServiceAndLoadProviders(key, 'especializado');
+                card.innerHTML = `<i class="fas ${serv.icon}" style="color: var(--secondary);"></i><span>${key}</span>`;
+                containerEspec.appendChild(card);
+            });
+
+            if (currentUser.providerId !== null) {
+                document.getElementById('my-profile-banner').style.display = 'block';
+            }
+        }
+
+        function openProviderTypeSelection() { navTo('screen-provider-type'); }
+
+        function selectProviderType(type) {
+            currentRegistrationType = type;
+            isEditMode = false;
+            currentPhotoBase64 = "";
+            currentCertBase64 = "";
+
+            document.getElementById('reg-title').innerText = type === 'instantaneo' ? "Aderir (Serviços)" : "Aderir (Especializado)";
+            document.getElementById('reg-subtitle').style.display = "block";
+            document.getElementById('reg-submit-btn').innerHTML = '<i class="fas fa-check-circle"></i> Submeter Meu Cadastro';
+            document.getElementById('reg-back-btn').onclick = () => navTo('screen-provider-type');
+
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-tel').value = '';
+            document.getElementById('reg-province').value = '';
+            document.getElementById('reg-exp').value = '1-2';
+            document.getElementById('reg-age').value = '';
+            document.getElementById('reg-desc').value = '';
+            document.getElementById('reg-photo-preview').src = "https://via.placeholder.com/100?text=Foto";
+            document.getElementById('reg-cert').value = '';
+            document.getElementById('reg-cert-preview').style.display = 'none';
+            document.getElementById('reg-cert-preview').src = '';
+
+            populateServiceDropdowns(type);
+
+            if (type === 'especializado') {
+                document.getElementById('reg-cert-group').style.display = 'block';
+            } else {
+                document.getElementById('reg-cert-group').style.display = 'none';
+                document.getElementById('reg-subcategory-group').style.display = 'none';
+            }
+            navTo('screen-provider-register');
+        }
+
+        function populateServiceDropdowns(type) {
+            const sel = document.getElementById('reg-service');
+            sel.innerHTML = '<option value="" disabled selected>Selecione</option>';
+
+            if (type === 'instantaneo') {
+                listaServicosInstantaneos.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.nome; opt.innerText = s.nome;
+                    sel.appendChild(opt);
+                });
+            } else if (type === 'especializado') {
+                Object.keys(listaEspecializados).forEach(k => {
+                    const opt = document.createElement('option');
+                    opt.value = k; opt.innerText = k;
+                    sel.appendChild(opt);
+                });
+            }
+        }
+
+        function handleServiceChange() {
+            if (currentRegistrationType !== 'especializado') return;
+
+            const selValue = document.getElementById('reg-service').value;
+            const subGroup = document.getElementById('reg-subcategory-group');
+            const subSel = document.getElementById('reg-subcategory');
+
+            subSel.innerHTML = '<option value="" disabled selected>Selecione a especialidade</option>';
+
+            if (selValue && listaEspecializados[selValue] && listaEspecializados[selValue].subs.length > 0) {
+                subGroup.style.display = 'block';
+                listaEspecializados[selValue].subs.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub; opt.innerText = sub;
+                    subSel.appendChild(opt);
+                });
+            } else {
+                subGroup.style.display = 'none';
+            }
+        }
+
+        function previewPhoto(event, previewId, isProfilePic) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (isProfilePic) { currentPhotoBase64 = e.target.result; } 
+                    else { currentCertBase64 = e.target.result; }
+                    const imgTag = document.getElementById(previewId);
+                    imgTag.src = e.target.result;
+                    imgTag.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveProviderProfile() {
+            const name = document.getElementById('reg-name').value.trim();
+            const telRaw = document.getElementById('reg-tel').value.trim();
+            const service = document.getElementById('reg-service').value;
+            const prov = document.getElementById('reg-province').value;
+            const exp = document.getElementById('reg-exp').value;
+            const age = document.getElementById('reg-age').value;
+            const desc = document.getElementById('reg-desc').value.trim();
+            let subCategory = "";
+
+            if (currentRegistrationType === 'especializado' && document.getElementById('reg-subcategory-group').style.display !== 'none') {
+                subCategory = document.getElementById('reg-subcategory').value;
+                if (!subCategory) { showToast("⚠️ Selecione a especialidade (ramo) do seu serviço."); return; }
+            }
+
+            if (!name || !telRaw || !service || !prov || !exp || !desc) { showToast("⚠️ Preencha todos os campos obrigatórios (*)."); return; }
+            if (!/^[8][2-7][0-9]{7}$/.test(telRaw) && telRaw.length >= 9) {
+                if (telRaw.length < 9) { showToast("⚠️ O número deve ter pelo menos 9 dígitos."); return; }
+            }
+            if (!currentPhotoBase64 && !isEditMode) { showToast("⚠️ Por favor, faça upload de uma foto de perfil."); return; }
+            if (currentRegistrationType === 'especializado' && !currentCertBase64 && !isEditMode) { showToast("⚠️ O upload do Certificado é obrigatório."); return; }
+
+            const telSanitized = telRaw.startsWith("258") ? telRaw : "258" + telRaw;
+
+            if (isEditMode) {
+                const p = prestadoresDB.find(item => item.id === currentUser.providerId);
+                p.nome = name; p.tel = telSanitized; p.servico = service; p.subcategoria = subCategory; p.provincia = prov; p.exp = exp; p.idade = age ? parseInt(age) : null; p.desc = desc;
+                if (currentPhotoBase64) p.foto = currentPhotoBase64;
+                if (currentCertBase64) p.certificado = currentCertBase64;
+                showToast("✅ Perfil atualizado com sucesso!");
+                openManageProfile();
+            } else {
+                const novoID = Date.now();
+                const novoPrestador = {
+                    id: novoID, ativo: true, tipo: currentRegistrationType, nome: name, servico: service, subcategoria: subCategory,
+                    provincia: prov, exp: exp, idade: age ? parseInt(age) : null, avaliacoes: [], foto: currentPhotoBase64, certificado: currentCertBase64, tel: telSanitized, desc: desc
+                };
+                prestadoresDB.unshift(novoPrestador);
+                currentUser.providerId = novoID;
+                showToast("✅ Cadastro realizado! Você já está visível.");
+
+                if (currentUser.nome) { renderServicesHome(); navTo('screen-home'); } 
+                else { setTimeout(() => navTo('screen-user-register'), 1500); }
+            }
+        }
+
+        function selectServiceAndLoadProviders(serviceName, type) {
+            currentServiceSelected = serviceName;
+            document.getElementById('list-title').innerText = serviceName;
+            document.getElementById('providerSearch').value = '';
+            loadProvidersByServiceAndProvince();
+            navTo('screen-provider-list');
+        }
+
+        function loadProvidersByServiceAndProvince() {
+            const container = document.getElementById('providers-container');
+            container.innerHTML = '';
+            currentProviderListing = prestadoresDB.filter(p => p.servico === currentServiceSelected && p.provincia === currentUser.provincia && p.ativo === true);
+
+            if (currentProviderListing.length === 0) {
+                container.innerHTML = `
+                <div style="text-align: center; margin-top: 50px; padding: 20px; color: #888;">
+                    <i class="fas fa-user-slash" style="font-size: 40px; margin-bottom: 15px;"></i>
+                    <p>Ainda não temos <strong>${currentServiceSelected}s</strong> disponíveis em <strong>${currentUser.provincia}</strong>.</p>
+                </div>`;
+                return;
+            }
+            renderProviderCards(currentProviderListing);
+        }
+
+        function renderProviderCards(data) {
+            const container = document.getElementById('providers-container');
+            container.innerHTML = '';
+            data.forEach(p => {
+                let media = p.avaliacoes.length > 0 ? (p.avaliacoes.reduce((a, b) => a + b, 0) / p.avaliacoes.length).toFixed(1) : "Novo";
+                let subcatHtml = p.subcategoria ? `<span class="badge">${p.subcategoria}</span>` : '';
+                const card = document.createElement('div');
+                card.className = 'provider-card';
+                card.onclick = () => showProviderProfile(p.id);
+                card.innerHTML = `
+                <img src="${p.foto}" class="provider-avatar" alt="${p.nome}">
+                <div class="provider-info">
+                    <h4>${p.nome}</h4>
+                    ${subcatHtml}
+                    <p style="margin-top:4px;"><i class="fas fa-business-time"></i> ${p.exp} anos</p>
+                    <div class="stars"><i class="fas fa-star"></i> ${media}</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #ccc;"></i>`;
+                container.appendChild(card);
+            });
+        }
+
+        function filterProvidersBySearch() {
+            const term = document.getElementById('providerSearch').value.toLowerCase();
+            if (!term) { renderProviderCards(currentProviderListing); return; }
+            const filtered = currentProviderListing.filter(p => p.nome.toLowerCase().includes(term) || (p.subcategoria && p.subcategoria.toLowerCase().includes(term)));
+            renderProviderCards(filtered);
+        }
+
+        function showProviderProfile(providerId) {
+            currentlyViewedProviderId = providerId;
+            const p = prestadoresDB.find(item => item.id === providerId);
+            if (!p) return;
+
+            let media = p.avaliacoes.length > 0 ? (p.avaliacoes.reduce((a, b) => a + b, 0) / p.avaliacoes.length).toFixed(1) : "Novo";
+            document.getElementById('prof-img').src = p.foto;
+            document.getElementById('prof-name').innerText = p.nome;
+
+            let servicoDisplay = p.servico;
+            if (p.subcategoria) servicoDisplay += ` - ${p.subcategoria}`;
+            document.getElementById('prof-service').innerText = servicoDisplay;
+
+            if (p.tipo === 'especializado' && p.certificado) { document.getElementById('prof-cert-badge').style.display = 'block'; } 
+            else { document.getElementById('prof-cert-badge').style.display = 'none'; }
+
+            document.getElementById('prof-prov').innerText = p.provincia;
+            document.getElementById('prof-rating').innerText = media;
+            document.getElementById('prof-exp').innerText = p.exp;
+            document.getElementById('prof-age').innerText = p.idade ? p.idade : '--';
+            document.getElementById('prof-desc').innerText = p.desc;
+
+            resetStarUI();
+
+            if (currentUser.providerId === providerId) { document.getElementById('rating-widget-container').style.display = 'none'; } 
+            else { document.getElementById('rating-widget-container').style.display = 'block'; }
+
+            document.getElementById('btn-wa').onclick = function () {
+                const mensagem = encodeURIComponent(`Olá ${p.nome}, vi o teu perfil no app *MZ Serviços* e preciso dos teus serviços. Estás disponível?`);
+                window.open(`https://wa.me/${p.tel}?text=${mensagem}`, '_blank');
+            };
+
+            document.getElementById('btn-call').onclick = function () { window.open(`tel:+${p.tel}`, '_self'); };
+            navTo('screen-provider-profile');
+        }
+
+        function submitRating(ratingValue) {
+            if (!currentlyViewedProviderId) return;
+            const stars = document.querySelectorAll('#user-rating-stars i');
+            stars.forEach(s => {
+                if (parseInt(s.getAttribute('data-val')) <= ratingValue) { s.classList.add('active'); } 
+                else { s.classList.remove('active'); }
+            });
+            const p = prestadoresDB.find(item => item.id === currentlyViewedProviderId);
+            p.avaliacoes.push(ratingValue);
+            let media = (p.avaliacoes.reduce((a, b) => a + b, 0) / p.avaliacoes.length).toFixed(1);
+            document.getElementById('prof-rating').innerText = media;
+            showToast(`✅ Avaliaste o profissional com ${ratingValue} estrelas!`);
+        }
+
+        function resetStarUI() { document.querySelectorAll('#user-rating-stars i').forEach(s => s.classList.remove('active')); }
+
+        function openManageProfile() {
+            if (!currentUser.providerId) return;
+            const p = prestadoresDB.find(item => item.id === currentUser.providerId);
+            if (!p) return;
+            document.getElementById('my-prof-img').src = p.foto;
+            document.getElementById('my-prof-name').innerText = p.nome;
+            let servTxt = p.servico;
+            if (p.subcategoria) servTxt += ` (${p.subcategoria})`;
+            document.getElementById('my-prof-service').innerText = servTxt;
+            const toggle = document.getElementById('profile-toggle');
+            toggle.checked = p.ativo;
+            updateStatusText(p.ativo);
+            navTo('screen-manage-profile');
+        }
+
+        function toggleProfileStatus() {
+            const p = prestadoresDB.find(item => item.id === currentUser.providerId);
+            const toggle = document.getElementById('profile-toggle');
+            p.ativo = toggle.checked;
+            updateStatusText(p.ativo);
+            if (p.ativo) { showToast("✅ O teu perfil está agora PÚBLICO."); } 
+            else { showToast("🔒 Perfil DESATIVADO. Não aparecerás nas pesquisas."); }
+        }
+
+        function updateStatusText(isAtivo) {
+            const statusText = document.getElementById('profile-status-text');
+            if (isAtivo) { statusText.innerText = "Ativo (Público)"; statusText.style.color = "var(--success)"; } 
+            else { statusText.innerText = "Inativo (Oculto)"; statusText.style.color = "var(--text-light)"; }
+        }
+
+        function openEditMode() {
+            const p = prestadoresDB.find(item => item.id === currentUser.providerId);
+            if (!p) return;
+            isEditMode = true; currentRegistrationType = p.tipo;
+            document.getElementById('reg-title').innerText = "Editar Meu Perfil";
+            document.getElementById('reg-subtitle').style.display = "none";
+            document.getElementById('reg-submit-btn').innerHTML = '<i class="fas fa-save"></i> Guardar Alterações';
+            document.getElementById('reg-back-btn').onclick = () => navTo('screen-manage-profile');
+            populateServiceDropdowns(p.tipo);
+            document.getElementById('reg-name').value = p.nome;
+            document.getElementById('reg-tel').value = p.tel.replace("258", "");
+            document.getElementById('reg-service').value = p.servico;
+
+            if (p.tipo === 'especializado') {
+                document.getElementById('reg-cert-group').style.display = 'block';
+                handleServiceChange();
+                if (p.subcategoria) document.getElementById('reg-subcategory').value = p.subcategoria;
+            } else {
+                document.getElementById('reg-cert-group').style.display = 'none';
+                document.getElementById('reg-subcategory-group').style.display = 'none';
+            }
+
+            document.getElementById('reg-province').value = p.provincia;
+            document.getElementById('reg-exp').value = p.exp;
+            document.getElementById('reg-age').value = p.idade || "";
+            document.getElementById('reg-desc').value = p.desc;
+            currentPhotoBase64 = ""; document.getElementById('reg-photo-preview').src = p.foto;
+            currentCertBase64 = "";
+            if (p.certificado) {
+                document.getElementById('reg-cert-preview').src = p.certificado;
+                document.getElementById('reg-cert-preview').style.display = 'block';
+            } else { document.getElementById('reg-cert-preview').style.display = 'none'; }
+            navTo('screen-provider-register');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message; toast.className = "show";
+            setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+    </script>
+</body>
+</html>
